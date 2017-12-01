@@ -308,7 +308,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 147 (last added: recurrent_param)
+// LayerParameter next available layer-specific ID: 150 (last added: triplet_loss_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -383,6 +383,7 @@ message LayerParameter {
   optional InfogainLossParameter infogain_loss_param = 116;
   optional InnerProductParameter inner_product_param = 117;
   optional InputParameter input_param = 143;
+  optional LiftedStructSimilaritySoftmaxLossParameter lifted_struct_sim_softmax_loss_param = 147;  
   optional LogParameter log_param = 134;
   optional LRNParameter lrn_param = 118;
   optional MemoryDataParameter memory_data_param = 119;
@@ -396,6 +397,7 @@ message LayerParameter {
   optional ReductionParameter reduction_param = 136;
   optional ReLUParameter relu_param = 123;
   optional ReshapeParameter reshape_param = 133;
+  optional ROIPoolingParameter roi_pooling_param = 148;  
   optional ScaleParameter scale_param = 142;
   optional SigmoidParameter sigmoid_param = 124;
   optional SoftmaxParameter softmax_param = 125;
@@ -404,6 +406,7 @@ message LayerParameter {
   optional TanHParameter tanh_param = 127;
   optional ThresholdParameter threshold_param = 128;
   optional TileParameter tile_param = 138;
+  optional TripletLossParameter triplet_loss_param = 149;
   optional WindowDataParameter window_data_param = 129;
 }
 
@@ -843,6 +846,10 @@ message InputParameter {
   repeated BlobShape shape = 1;
 }
 
+message LiftedStructSimilaritySoftmaxLossParameter {
+    optional float margin = 1 [default = 1.0];
+}
+
 // Message that stores parameters used by LogLayer
 message LogParameter {
   // LogLayer computes outputs y = log_base(shift + scale * x), for base > 0.
@@ -1165,6 +1172,11 @@ message ThresholdParameter {
   optional float threshold = 1 [default = 0]; // Strictly positive values
 }
 
+message TripletLossParameter {
+    //margin for negative triplet
+    optional float margin = 1 [default = 1.0];
+}
+
 message WindowDataParameter {
   // Specify the data source.
   optional string source = 1;
@@ -1262,6 +1274,7 @@ message V1LayerParameter {
     TANH = 23;
     WINDOW_DATA = 24;
     THRESHOLD = 31;
+    TRIPLET_LOSS = 40;   
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -1296,6 +1309,7 @@ message V1LayerParameter {
   optional PoolingParameter pooling_param = 19;
   optional PowerParameter power_param = 21;
   optional ReLUParameter relu_param = 30;
+  optional ROIPoolingParameter roi_pooling_param = 43;  
   optional SigmoidParameter sigmoid_param = 38;
   optional SoftmaxParameter softmax_param = 39;
   optional SliceParameter slice_param = 31;
@@ -1409,4 +1423,15 @@ message PReLUParameter {
   optional FillerParameter filler = 1;
   // Whether or not slope parameters are shared across channels.
   optional bool channel_shared = 2 [default = false];
+}
+
+// Message that stores parameters used by ROIPoolingLayer
+message ROIPoolingParameter {
+    // Pad, kernel size, and stride are all given as a single value for equal
+    // dimensions in height and width or as Y, X pairs.
+    optional uint32 pooled_h = 1 [default = 0]; // The pooled output height
+    optional uint32 pooled_w = 2 [default = 0]; // The pooled output width
+    // Multiplicative spatial scale factor to translate ROI coords from their
+    // input scale to the scale used when pooling
+    optional float spatial_scale = 3 [default = 1];
 }
