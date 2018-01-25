@@ -207,7 +207,8 @@ namespace caffe
                 CHECK_EQ(isnan(soft_maximum), false);
 
                 // hinge J = soft_maximum + D_ij (positive pair similarity)
-                Dtype this_loss = soft_maximum + dist_pos * sds[i][j];
+	            Dtype D_ij = std::max(Dtype(0), dist_pos - margin * (Dtype(1) - sds[i][j]));
+                Dtype this_loss = soft_maximum + D_ij;
                 CHECK_GE(this_loss, Dtype(0)) << "Loss is 0.0";
                 CHECK_EQ(isnan(this_loss), false);
 
